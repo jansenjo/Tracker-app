@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Tracker">
+    <meta name="theme-color" content="#0a0a0a">
+    <title>Alcohol Tracker</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bg: #0a0a0a;
+            --surface: #161616;
+            --surface-elevated: #1f1f1f;
+            --border: #2a2a2a;
+            --text: #f5f5f7;
+            --text-muted: #8e8e93;
+            --text-dim: #6e6e73;
+            --accent: #f5f5f7;
+            --good: #30d158;
+            --warn: #ff9f0a;
+            --bad: #ff453a;
+            --beer: #d4a017;
+            --wine: #a83248;
+            --spirit: #6b7280;
+        }
+
+        html, body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            max-width: 520px;
+            margin: 0 auto;
+            padding: env(safe-area-inset-top, 20px) 20px env(safe-area-inset-bottom, 40px);
+            padding-top: max(env(safe-area-inset-top), 24px);
+            padding-bottom: max(env(safe-area-inset-bottom), 40px);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin: 8px 0 28px;
+        }
+
+        header h1 {
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        header .date {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .hero {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .streaks {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .streak-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .streak-card.active {
+            border-color: var(--good);
+            background: linear-gradient(180deg, rgba(48, 209, 88, 0.08), transparent);
+        }
+
+        .streak-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .streak-label .flame {
+            font-size: 12px;
+        }
+
+        .streak-value {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            font-variant-numeric: tabular-nums;
+            line-height: 1.1;
+        }
+
+        .streak-value .unit {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-left: 4px;
+        }
+
+        .streak-sub {
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-top: 2px;
+        }
+
+        .hero-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
+        }
+
+        .hero-value {
+            font-size: 56px;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .hero-unit {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-left: 4px;
+        }
+
+        .hero-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 14px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 500;
+            background: rgba(48, 209, 88, 0.12);
+            color: var(--good);
+        }
+
+        .hero-status.warn {
+            background: rgba(255, 159, 10, 0.12);
+            color: var(--warn);
+        }
+
+        .hero-status.bad {
+            background: rgba(255, 69, 58, 0.12);
+            color: var(--bad);
+        }
+
+        .hero-status .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .date-picker {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin-bottom: 12px;
+        }
+
+        .date-picker .picker-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 500;
+        }
+
+        .date-picker .picker-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .date-picker input[type="date"] {
+            background: var(--surface-elevated);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 10px;
+            padding: 8px 10px;
+            font-family: inherit;
+            font-size: 14px;
+            color-scheme: dark;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .date-picker .today-btn {
+            background: var(--surface-elevated);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            border-radius: 10px;
+            padding: 8px 12px;
+            font-family: inherit;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .date-picker .today-btn:hover {
+            color: var(--text);
+        }
+
+        .date-picker.past {
+            border-color: var(--warn);
+        }
+
+        .date-picker.past .picker-label {
+            color: var(--warn);
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px 8px;
+            color: var(--text);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.1s ease, background 0.15s ease;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+            background: var(--surface-elevated);
+        }
+
+        .btn .icon {
+            font-size: 22px;
+            line-height: 1;
+        }
+
+        .btn .label {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .btn .sub {
+            font-size: 11px;
+            color: var(--text-dim);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .btn.beer .icon { color: var(--beer); }
+        .btn.wine .icon { color: var(--wine); }
+        .btn.spirit .icon { color: var(--spirit); }
+
+        section {
+            margin-bottom: 24px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 0 4px;
+        }
+
+        .section-header h2 {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .section-header .action {
+            font-size: 13px;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            padding: 4px 8px;
+        }
+
+        .section-header .action:hover {
+            color: var(--text);
+        }
+
+        .list {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        .list-item .swatch {
+            width: 8px;
+            height: 32px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .list-item .swatch.beer { background: var(--beer); }
+        .list-item .swatch.wine { background: var(--wine); }
+        .list-item .swatch.spirit { background: var(--spirit); }
+
+        .list-item .info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .list-item .info .name {
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .list-item .info .meta {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .list-item .delete {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-family: inherit;
+        }
+
+        .list-item .delete:hover {
+            color: var(--bad);
+            background: var(--surface-elevated);
+        }
+
+        .empty {
+            padding: 32px 16px;
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 14px;
+        }
+
+        .chart {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px 16px 16px;
+        }
+
+        .chart-bars {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            height: 100px;
+            align-items: end;
+            margin-bottom: 10px;
+        }
+
+        .chart-bar-col {
+            display: flex;
+            flex-direction: column;
+            justify-content: end;
+            height: 100%;
+            position: relative;
+        }
+
+        .chart-bar {
+            background: var(--text);
+            border-radius: 4px 4px 0 0;
+            min-height: 2px;
+            opacity: 0.85;
+            transition: height 0.3s ease;
+        }
+
+        .chart-bar.today {
+            background: var(--good);
+            opacity: 1;
+        }
+
+        .chart-bar.zero {
+            background: var(--border);
+            opacity: 1;
+            height: 2px !important;
+        }
+
+        .chart-value {
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            color: var(--text-muted);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .chart-labels {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            font-size: 11px;
+            color: var(--text-muted);
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .chart-summary {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        .chart-summary .label {
+            color: var(--text-muted);
+        }
+
+        .chart-summary .value {
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .milestones {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .milestone {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            transition: opacity 0.2s ease;
+        }
+
+        .milestone:last-child {
+            border-bottom: none;
+        }
+
+        .milestone.locked {
+            opacity: 0.45;
+        }
+
+        .milestone.current {
+            background: linear-gradient(180deg, rgba(48, 209, 88, 0.06), transparent);
+        }
+
+        .milestone-marker {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--surface-elevated);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+            font-weight: 600;
+            color: var(--text-muted);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .milestone.reached .milestone-marker {
+            background: var(--good);
+            border-color: var(--good);
+            color: #0a0a0a;
+        }
+
+        .milestone.current .milestone-marker {
+            background: transparent;
+            border-color: var(--good);
+            color: var(--good);
+        }
+
+        .milestone-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .milestone-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .milestone-text {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .milestone-status {
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .milestone.reached .milestone-status,
+        .milestone.current .milestone-status {
+            color: var(--good);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 32px;
+            font-size: 11px;
+            color: var(--text-dim);
+        }
+
+        footer button {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-size: 11px;
+            cursor: pointer;
+            font-family: inherit;
+            text-decoration: underline;
+            padding: 8px;
+        }
+
+        @media (max-width: 380px) {
+            .hero-value { font-size: 48px; }
+            .btn { padding: 14px 6px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Tracker</h1>
+        <span class="date" id="today-date"></span>
+    </header>
+
+    <div class="hero">
+        <div class="hero-label">Vandaag</div>
+        <div>
+            <span class="hero-value" id="today-units">0,0</span><span class="hero-unit">eenheden</span>
+        </div>
+        <div class="hero-status" id="status-pill">
+            <span class="dot"></span>
+            <span id="status-text">Geen consumptie</span>
+        </div>
+    </div>
+
+    <div class="streaks">
+        <div class="streak-card" id="current-streak-card">
+            <span class="streak-label"><span class="flame">🔥</span> Huidige streak</span>
+            <span class="streak-value"><span id="current-streak">0</span><span class="unit">dagen</span></span>
+            <span class="streak-sub" id="current-streak-sub">Begin vandaag</span>
+        </div>
+        <div class="streak-card">
+            <span class="streak-label">🏆 Persoonlijk record</span>
+            <span class="streak-value"><span id="best-streak">0</span><span class="unit">dagen</span></span>
+            <span class="streak-sub" id="best-streak-sub">Nog geen record</span>
+        </div>
+    </div>
+
+    <div class="date-picker" id="date-picker">
+        <span class="picker-label" id="picker-label">Logdatum</span>
+        <div class="picker-controls">
+            <input type="date" id="log-date">
+            <button class="today-btn" id="today-btn">Vandaag</button>
+        </div>
+    </div>
+
+    <div class="buttons">
+        <button class="btn beer" data-type="beer">
+            <span class="icon">🍺</span>
+            <span class="label">Bier</span>
+            <span class="sub">+1,3 e.</span>
+        </button>
+        <button class="btn wine" data-type="wine">
+            <span class="icon">🍷</span>
+            <span class="label">Wijn</span>
+            <span class="sub">+1,0 e.</span>
+        </button>
+    </div>
+
+    <section>
+        <div class="section-header">
+            <h2 id="list-section-title">Vandaag</h2>
+            <button class="action" id="reset-day">Wis dag</button>
+        </div>
+        <div class="list" id="today-list"></div>
+    </section>
+
+    <section>
+        <div class="section-header">
+            <h2>Afgelopen 7 dagen</h2>
+        </div>
+        <div class="chart">
+            <div class="chart-bars" id="chart-bars"></div>
+            <div class="chart-labels" id="chart-labels"></div>
+            <div class="chart-summary">
+                <span class="label">Totaal week</span>
+                <span class="value" id="week-total">0,0 e.</span>
+            </div>
+            <div class="chart-summary" style="border-top: none; padding-top: 0; margin-top: 4px;">
+                <span class="label">Alcoholvrije dagen</span>
+                <span class="value" id="dry-days">0 / 7</span>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="section-header">
+            <h2>Mijlpalen alcoholvrij</h2>
+        </div>
+        <div class="milestones" id="milestones"></div>
+    </section>
+
+    <footer>
+        <div>Richtlijn Gezondheidsraad: 0 of max. 1 eenheid per dag</div>
+        <button id="reset-all">Alles wissen</button>
+    </footer>
+
+    <script>
+        // === DATA MODEL ===
+        // Elk drankje: { id, type, units, timestamp }
+        // type: 'beer' | 'wine' | 'spirit'
+
+        const DRINK_TYPES = {
+            beer: { name: 'Bier (330 ml)', units: 1.3, kcal: 145, swatch: 'beer' },
+            wine: { name: 'Wijn', units: 1.0, kcal: 85, swatch: 'wine' }
+        };
+
+        const STORAGE_KEY = 'alcohol-tracker-drinks';
+
+        const MILESTONES = [
+            {
+                days: 1,
+                title: '24 uur',
+                text: 'Lichaam scheidt resterende alcohol uit; vocht- en bloedsuikerbalans beginnen te herstellen.'
+            },
+            {
+                days: 3,
+                title: '3 dagen',
+                text: 'Slaap begint te normaliseren — meer en diepere REM-slaap, minder nachtelijk ontwaken.'
+            },
+            {
+                days: 7,
+                title: '1 week',
+                text: 'Meer energie overdag, helderder denken, betere hydratatie. Huid oogt vaak frisser.'
+            },
+            {
+                days: 14,
+                title: '2 weken',
+                text: 'Stabielere stemming, minder prikkelbaarheid. Maag/spijsvertering rustiger.'
+            },
+            {
+                days: 21,
+                title: '3 weken',
+                text: 'Bloeddruk daalt meetbaar bij wie eerder regelmatig dronk. Slaap verder verbeterd.'
+            },
+            {
+                days: 30,
+                title: '1 maand',
+                text: 'Lever heeft tijd gehad om vet af te bouwen. Veel mensen melden gewichtsverlies door wegvallende drank-calorieën.'
+            },
+            {
+                days: 60,
+                title: '2 maanden',
+                text: 'Cognitieve functies (concentratie, geheugen) verder hersteld. Sportprestaties en herstel merkbaar beter.'
+            },
+            {
+                days: 90,
+                title: '3 maanden',
+                text: 'Substantiële verbetering van leverwaarden en hart-vaat-risicofactoren bij wie eerder fors dronk.'
+            },
+            {
+                days: 180,
+                title: '6 maanden',
+                text: 'Lange-termijn risicoreductie wordt zichtbaar. Slaap- en stemmingseffecten blijven verder stabiliseren.'
+            },
+            {
+                days: 365,
+                title: '1 jaar',
+                text: 'Significant lager risico op alcohol-gerelateerde aandoeningen. Voor velen het punt waarop drinken geen rol meer speelt in identiteit of routine.'
+            }
+        ];
+
+        // === STATE ===
+        let drinks = loadDrinks();
+
+        // === HELPERS ===
+        function loadDrinks() {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return [];
+            try {
+                return JSON.parse(raw);
+            } catch (e) {
+                console.error('Kon opgeslagen data niet lezen:', e);
+                return [];
+            }
+        }
+
+        function saveDrinks() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(drinks));
+        }
+
+        function todayKey() {
+            const now = new Date();
+            return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+        }
+
+        function dateKey(date) {
+            return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+        }
+
+        function formatTime(ts) {
+            return new Date(ts).toLocaleTimeString('nl-NL', {
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZone: 'Europe/Amsterdam'
+            });
+        }
+
+        function formatNumber(n) {
+            return n.toFixed(1).replace('.', ',');
+        }
+
+        function formatDateLong() {
+            return new Date().toLocaleDateString('nl-NL', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                timeZone: 'Europe/Amsterdam'
+            });
+        }
+
+        function drinksOnDate(key) {
+            return drinks.filter(d => dateKey(new Date(d.timestamp)) === key);
+        }
+
+        function unitsOnDate(key) {
+            return drinksOnDate(key).reduce((sum, d) => sum + d.units, 0);
+        }
+
+        // === STREAK BEREKENING ===
+        function computeStreaks() {
+            const today = todayKey();
+            const todayUnits = unitsOnDate(today);
+
+            // Huidige streak: tel terug vanaf vandaag (of gisteren als vandaag al gedronken)
+            let current = 0;
+            let cursor = new Date();
+            if (todayUnits > 0) {
+                // Vandaag is al "vergeven", begin de streak-telling vanaf gisteren
+                cursor.setDate(cursor.getDate() - 1);
+            }
+            while (true) {
+                const key = dateKey(cursor);
+                if (unitsOnDate(key) === 0) {
+                    current++;
+                    cursor.setDate(cursor.getDate() - 1);
+                } else {
+                    break;
+                }
+                // Veiligheidsstop voor onwaarschijnlijk lange streaks
+                if (current > 3650) break;
+            }
+
+            // Beste streak ooit: scan vanaf de eerste registratie t/m gisteren
+            // (Dagen zonder registratie tellen ook mee als alcoholvrij,
+            // maar alleen vanaf het moment dat je de app bent gaan gebruiken.)
+            let best = 0;
+            if (drinks.length > 0) {
+                const earliest = new Date(Math.min(...drinks.map(d => d.timestamp)));
+                earliest.setHours(0, 0, 0, 0);
+                const endDate = new Date();
+                if (todayUnits === 0) {
+                    // Vandaag is nog alcoholvrij: meetellen tot vandaag
+                } else {
+                    endDate.setDate(endDate.getDate() - 1);
+                }
+                endDate.setHours(0, 0, 0, 0);
+
+                let run = 0;
+                const walk = new Date(earliest);
+                while (walk <= endDate) {
+                    if (unitsOnDate(dateKey(walk)) === 0) {
+                        run++;
+                        if (run > best) best = run;
+                    } else {
+                        run = 0;
+                    }
+                    walk.setDate(walk.getDate() + 1);
+                }
+                // Vergeet niet: de huidige (lopende) streak kan ook het record zijn
+                if (current > best) best = current;
+            }
+
+            return { current, best };
+        }
+
+        // === ACTIONS ===
+        function getSelectedDate() {
+            const input = document.getElementById('log-date');
+            return input.value || todayKey();
+        }
+
+        function timestampForDateKey(key) {
+            // Als de gekozen datum vandaag is: nu. Anders 12:00 van die dag,
+            // plus een kleine offset zodat opeenvolgende toevoegingen niet identieke timestamps krijgen.
+            if (key === todayKey()) return Date.now();
+            const [y, m, d] = key.split('-').map(Number);
+            const base = new Date(y, m - 1, d, 12, 0, 0).getTime();
+            // Offset op basis van hoeveel items er al op die dag staan
+            const existing = drinksOnDate(key).length;
+            return base + existing * 60 * 1000; // 1 minuut per toegevoegd item
+        }
+
+        function addDrink(type) {
+            const def = DRINK_TYPES[type];
+            if (!def) return;
+            const dateK = getSelectedDate();
+            drinks.push({
+                id: Date.now() + '-' + Math.random().toString(36).slice(2, 8),
+                type: type,
+                units: def.units,
+                timestamp: timestampForDateKey(dateK)
+            });
+            saveDrinks();
+            render();
+        }
+
+        function removeDrink(id) {
+            drinks = drinks.filter(d => d.id !== id);
+            saveDrinks();
+            render();
+        }
+
+        function resetToday() {
+            const selected = getSelectedDate();
+            const dayDrinks = drinksOnDate(selected);
+            if (dayDrinks.length === 0) return;
+            const label = selected === todayKey() ? 'vandaag' : formatDateForLabel(selected);
+            if (!confirm('Wis ' + label + '? (' + dayDrinks.length + ' items)')) return;
+            drinks = drinks.filter(d => dateKey(new Date(d.timestamp)) !== selected);
+            saveDrinks();
+            render();
+        }
+
+        function resetAll() {
+            if (drinks.length === 0) return;
+            if (!confirm('Alle geschiedenis wissen? Dit kan niet ongedaan worden.')) return;
+            drinks = [];
+            saveDrinks();
+            render();
+        }
+
+        // === RENDER ===
+        function renderHero() {
+            const selected = getSelectedDate();
+            const selectedUnits = unitsOnDate(selected);
+            const isToday = selected === todayKey();
+            document.getElementById('today-units').textContent = formatNumber(selectedUnits);
+
+            const heroLabel = document.querySelector('.hero-label');
+            heroLabel.textContent = isToday ? 'Vandaag' : formatDateForLabel(selected);
+
+            const pill = document.getElementById('status-pill');
+            const text = document.getElementById('status-text');
+            pill.classList.remove('warn', 'bad');
+            if (selectedUnits === 0) {
+                text.textContent = 'Geen consumptie';
+            } else if (selectedUnits <= 1) {
+                text.textContent = 'Binnen richtlijn';
+            } else if (selectedUnits <= 3) {
+                pill.classList.add('warn');
+                text.textContent = 'Boven richtlijn';
+            } else {
+                pill.classList.add('bad');
+                text.textContent = 'Ruim boven richtlijn';
+            }
+        }
+
+        function formatDateForLabel(key) {
+            const [y, m, d] = key.split('-').map(Number);
+            return new Date(y, m - 1, d).toLocaleDateString('nl-NL', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'short'
+            });
+        }
+
+        function renderTodayList() {
+            const list = document.getElementById('today-list');
+            const selected = getSelectedDate();
+            const items = drinksOnDate(selected).sort((a, b) => b.timestamp - a.timestamp);
+
+            if (items.length === 0) {
+                list.innerHTML = '<div class="empty">Nog niets geregistreerd</div>';
+                return;
+            }
+
+            list.innerHTML = items.map(d => {
+                const def = DRINK_TYPES[d.type];
+                return `
+                    <div class="list-item">
+                        <div class="swatch ${def.swatch}"></div>
+                        <div class="info">
+                            <div class="name">${def.name}</div>
+                            <div class="meta">${formatNumber(d.units)} eenheid · ${def.kcal} kcal</div>
+                        </div>
+                        <button class="delete" data-id="${d.id}" aria-label="Verwijder">×</button>
+                    </div>
+                `;
+            }).join('');
+
+            list.querySelectorAll('.delete').forEach(btn => {
+                btn.addEventListener('click', () => removeDrink(btn.dataset.id));
+            });
+        }
+
+        function renderChart() {
+            const bars = document.getElementById('chart-bars');
+            const labels = document.getElementById('chart-labels');
+            const todayK = todayKey();
+
+            // Laatste 7 dagen, oudste links
+            const days = [];
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                const key = dateKey(d);
+                const units = unitsOnDate(key);
+                days.push({
+                    date: d,
+                    key: key,
+                    units: units,
+                    label: d.toLocaleDateString('nl-NL', { weekday: 'short', timeZone: 'Europe/Amsterdam' }).slice(0, 2)
+                });
+            }
+
+            const maxUnits = Math.max(...days.map(d => d.units), 1);
+
+            bars.innerHTML = days.map(d => {
+                const isToday = d.key === todayK;
+                const isZero = d.units === 0;
+                const heightPct = isZero ? 0 : Math.max((d.units / maxUnits) * 100, 6);
+                let className = 'chart-bar';
+                if (isToday) className += ' today';
+                if (isZero) className += ' zero';
+                return `
+                    <div class="chart-bar-col">
+                        ${d.units > 0 ? `<span class="chart-value">${formatNumber(d.units)}</span>` : ''}
+                        <div class="${className}" style="height: ${heightPct}%;"></div>
+                    </div>
+                `;
+            }).join('');
+
+            labels.innerHTML = days.map(d => `<span>${d.label}</span>`).join('');
+
+            const weekTotal = days.reduce((sum, d) => sum + d.units, 0);
+            const dryDays = days.filter(d => d.units === 0).length;
+            document.getElementById('week-total').textContent = formatNumber(weekTotal) + ' e.';
+            document.getElementById('dry-days').textContent = dryDays + ' / 7';
+        }
+
+        function renderDate() {
+            document.getElementById('today-date').textContent = formatDateLong();
+        }
+
+        function renderDatePicker() {
+            const input = document.getElementById('log-date');
+            const picker = document.getElementById('date-picker');
+            const label = document.getElementById('picker-label');
+            const sectionTitle = document.getElementById('list-section-title');
+            const selected = input.value || todayKey();
+            const isToday = selected === todayKey();
+
+            input.max = todayKey(); // geen toekomstige datums
+            picker.classList.toggle('past', !isToday);
+            label.textContent = isToday ? 'Logdatum' : 'Logdatum (historisch)';
+            sectionTitle.textContent = isToday ? 'Vandaag' : formatDateForLabel(selected);
+        }
+
+        function renderStreaks() {
+            const { current, best } = computeStreaks();
+            const todayUnits = unitsOnDate(todayKey());
+
+            document.getElementById('current-streak').textContent = current;
+            document.getElementById('best-streak').textContent = best;
+
+            const card = document.getElementById('current-streak-card');
+            const sub = document.getElementById('current-streak-sub');
+            const bestSub = document.getElementById('best-streak-sub');
+
+            card.classList.toggle('active', current > 0);
+
+            if (current === 0) {
+                sub.textContent = todayUnits > 0 ? 'Reeks onderbroken vandaag' : 'Begin vandaag';
+            } else if (todayUnits > 0) {
+                sub.textContent = 'T/m gisteren';
+            } else {
+                sub.textContent = current === 1 ? 'Hou vol' : 'Goed bezig';
+            }
+
+            if (best === 0) {
+                bestSub.textContent = 'Nog geen record';
+            } else if (current === best && current > 0) {
+                bestSub.textContent = 'Nieuw record!';
+            } else {
+                bestSub.textContent = 'Te kloppen: ' + best;
+            }
+        }
+
+        function renderMilestones() {
+            const { current } = computeStreaks();
+            const container = document.getElementById('milestones');
+
+            // Vind de huidige (= eerstvolgende nog niet bereikte) mijlpaal
+            const nextIndex = MILESTONES.findIndex(m => m.days > current);
+
+            container.innerHTML = MILESTONES.map((m, i) => {
+                let className = 'milestone';
+                let status = '';
+                let marker = m.days;
+
+                if (current >= m.days) {
+                    className += ' reached';
+                    marker = '✓';
+                    status = 'Bereikt';
+                } else if (i === nextIndex) {
+                    className += ' current';
+                    const daysToGo = m.days - current;
+                    status = 'Nog ' + daysToGo + ' ' + (daysToGo === 1 ? 'dag' : 'dagen');
+                } else {
+                    className += ' locked';
+                }
+
+                return `
+                    <div class="${className}">
+                        <div class="milestone-marker">${marker}</div>
+                        <div class="milestone-body">
+                            <div class="milestone-title">${m.title}</div>
+                            <div class="milestone-text">${m.text}</div>
+                            ${status ? `<div class="milestone-status">${status}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function render() {
+            renderDate();
+            renderDatePicker();
+            renderHero();
+            renderStreaks();
+            renderTodayList();
+            renderChart();
+            renderMilestones();
+        }
+
+        // === EVENT LISTENERS ===
+        document.querySelectorAll('.btn[data-type]').forEach(btn => {
+            btn.addEventListener('click', () => addDrink(btn.dataset.type));
+        });
+
+        document.getElementById('reset-day').addEventListener('click', resetToday);
+        document.getElementById('reset-all').addEventListener('click', resetAll);
+
+        // Datum-picker
+        const dateInput = document.getElementById('log-date');
+        dateInput.value = todayKey();
+        dateInput.addEventListener('change', render);
+        document.getElementById('today-btn').addEventListener('click', () => {
+            dateInput.value = todayKey();
+            render();
+        });
+
+        // Ververs bij terugkomen op tab (bv. nieuwe dag begonnen)
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) render();
+        });
+
+        render();
+    </script>
+</body>
+</html>
