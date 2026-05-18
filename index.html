@@ -52,8 +52,16 @@
         header {
             display: flex;
             justify-content: space-between;
-            align-items: baseline;
+            align-items: center;
             margin: 8px 0 28px;
+            gap: 12px;
+        }
+
+        header .header-left {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
         }
 
         header h1 {
@@ -66,6 +74,186 @@
             font-size: 13px;
             color: var(--text-muted);
             font-variant-numeric: tabular-nums;
+        }
+
+        .settings-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--text-muted);
+            flex-shrink: 0;
+            transition: transform 0.15s ease, color 0.15s ease;
+        }
+
+        .settings-btn:hover {
+            color: var(--text);
+        }
+
+        .settings-btn:active {
+            transform: scale(0.92);
+        }
+
+        .settings-sheet {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            border-radius: 24px 24px 0 0;
+            padding: 24px 20px max(env(safe-area-inset-bottom), 24px);
+            transform: translateY(100%);
+            transition: transform 0.25s ease;
+            z-index: 100;
+            max-width: 520px;
+            margin: 0 auto;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .settings-sheet.open {
+            transform: translateY(0);
+        }
+
+        .settings-field {
+            margin-bottom: 18px;
+        }
+
+        .settings-field-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 6px;
+        }
+
+        .settings-field label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .settings-field .value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            font-variant-numeric: tabular-nums;
+            min-width: 60px;
+            text-align: right;
+        }
+
+        .settings-field .hint {
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        .settings-field input[type="range"] {
+            width: 100%;
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+            margin: 8px 0 0;
+        }
+
+        .settings-field input[type="range"]::-webkit-slider-runnable-track {
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+        }
+
+        .settings-field input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--text);
+            margin-top: -9px;
+            cursor: pointer;
+        }
+
+        .settings-field input[type="range"]::-moz-range-track {
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+        }
+
+        .settings-field input[type="range"]::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--text);
+            border: none;
+            cursor: pointer;
+        }
+
+        .settings-field input[type="number"] {
+            background: var(--surface-elevated);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 12px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 14px;
+            color-scheme: dark;
+            font-variant-numeric: tabular-nums;
+            width: 90px;
+            text-align: right;
+        }
+
+        .settings-group-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin: 24px 0 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .settings-group-title:first-child {
+            margin-top: 0;
+        }
+
+        .settings-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .settings-actions button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid var(--border);
+        }
+
+        .settings-actions .restore {
+            background: var(--surface-elevated);
+            color: var(--text-muted);
+        }
+
+        .settings-actions .save {
+            background: var(--text);
+            color: var(--bg);
+            border-color: var(--text);
+            font-weight: 600;
         }
 
         .hero {
@@ -572,6 +760,207 @@
             color: var(--good);
         }
 
+        .close-day {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(180deg, rgba(48, 209, 88, 0.15), rgba(48, 209, 88, 0.06));
+            border: 1px solid var(--good);
+            border-radius: 16px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.1s ease;
+        }
+
+        .close-day:active {
+            transform: scale(0.98);
+        }
+
+        .close-day.hidden {
+            display: none;
+        }
+
+        .day-closed-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .day-closed-badge .activity-icon {
+            font-size: 18px;
+        }
+
+        .day-closed-badge .reopen {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-size: 12px;
+            cursor: pointer;
+            font-family: inherit;
+            text-decoration: underline;
+            padding: 4px;
+        }
+
+        .totals {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .totals-item {
+            padding: 4px 0;
+        }
+
+        .totals-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 4px;
+        }
+
+        .totals-value {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .totals-value .unit {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-left: 3px;
+        }
+
+        .totals-note {
+            grid-column: 1 / -1;
+            font-size: 11px;
+            color: var(--text-dim);
+            border-top: 1px solid var(--border);
+            padding-top: 10px;
+            margin-top: 4px;
+        }
+
+        .sheet-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 50;
+        }
+
+        .sheet-backdrop.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .activity-sheet {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            border-radius: 24px 24px 0 0;
+            padding: 24px 20px max(env(safe-area-inset-bottom), 24px);
+            transform: translateY(100%);
+            transition: transform 0.25s ease;
+            z-index: 100;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        .activity-sheet.open {
+            transform: translateY(0);
+        }
+
+        .sheet-grabber {
+            width: 36px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            margin: 0 auto 16px;
+        }
+
+        .sheet-title {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            text-align: center;
+        }
+
+        .sheet-sub {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .activity-btn {
+            background: var(--surface-elevated);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 4px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 11px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            transition: transform 0.1s ease, border-color 0.15s ease;
+        }
+
+        .activity-btn:active {
+            transform: scale(0.95);
+            border-color: var(--good);
+        }
+
+        .activity-btn .activity-icon {
+            font-size: 22px;
+        }
+
+        .sheet-skip {
+            width: 100%;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 14px;
+            padding: 12px;
+            cursor: pointer;
+        }
+
         footer {
             text-align: center;
             margin-top: 32px;
@@ -598,8 +987,11 @@
 </head>
 <body>
     <header>
-        <h1>Tracker</h1>
-        <span class="date" id="today-date"></span>
+        <div class="header-left">
+            <h1>Tracker</h1>
+            <span class="date" id="today-date"></span>
+        </div>
+        <button class="settings-btn" id="settings-btn" aria-label="Instellingen">⚙</button>
     </header>
 
     <div class="hero">
@@ -611,6 +1003,17 @@
             <span class="dot"></span>
             <span id="status-text">Geen consumptie</span>
         </div>
+    </div>
+
+    <button class="close-day" id="close-day-btn">
+        <span>✓</span>
+        <span id="close-day-label">Dag afsluiten — alcoholvrij</span>
+    </button>
+
+    <div class="day-closed-badge" id="day-closed-badge" style="display:none;">
+        <span class="activity-icon" id="closed-icon">✓</span>
+        <span id="closed-text">Dag afgesloten</span>
+        <button class="reopen" id="reopen-btn">Ongedaan</button>
     </div>
 
     <div class="streaks">
@@ -625,6 +1028,33 @@
             <span class="streak-sub" id="best-streak-sub">Nog geen record</span>
         </div>
     </div>
+
+    <section id="totals-section" style="margin-top: 8px;">
+        <div class="section-header">
+            <h2>Sinds 4 mei</h2>
+        </div>
+        <div class="totals">
+            <div class="totals-item">
+                <div class="totals-label">Alcoholvrije dagen</div>
+                <div class="totals-value"><span id="total-dry-days">0</span></div>
+            </div>
+            <div class="totals-item">
+                <div class="totals-label">Eenheden vermeden</div>
+                <div class="totals-value"><span id="total-units">0</span><span class="unit">e.</span></div>
+            </div>
+            <div class="totals-item">
+                <div class="totals-label">Kcal bespaard</div>
+                <div class="totals-value"><span id="total-kcal">0</span></div>
+            </div>
+            <div class="totals-item">
+                <div class="totals-label">Niet uitgegeven</div>
+                <div class="totals-value">€<span id="total-euros">0</span></div>
+            </div>
+            <div class="totals-note">
+                Schatting op basis van een baseline van <span id="baseline-units">2,0</span> eenheden per dag à €<span id="baseline-price">2,00</span> per consumptie.
+            </div>
+        </div>
+    </section>
 
     <div class="date-picker" id="date-picker">
         <span class="picker-label" id="picker-label">Logdatum</span>
@@ -685,17 +1115,122 @@
         <button id="reset-all">Alles wissen</button>
     </footer>
 
+    <div class="sheet-backdrop" id="sheet-backdrop"></div>
+
+    <div class="settings-sheet" id="settings-sheet">
+        <div class="sheet-grabber"></div>
+        <div class="sheet-title">Instellingen</div>
+        <div class="sheet-sub">Pas de waarden aan voor jouw situatie.</div>
+
+        <div class="settings-group-title">Besparingsteller</div>
+
+        <div class="settings-field">
+            <div class="settings-field-row">
+                <label for="set-baseline">Baseline eenheden per dag</label>
+                <span class="value" id="set-baseline-value">2,0</span>
+            </div>
+            <input type="range" id="set-baseline" min="0.5" max="6" step="0.5">
+            <div class="hint">Wat dronk je gemiddeld per dag vóór de streak. Gebruikt om vermeden eenheden te berekenen.</div>
+        </div>
+
+        <div class="settings-field">
+            <div class="settings-field-row">
+                <label for="set-price">Prijs per consumptie (€)</label>
+                <input type="number" id="set-price" min="0" max="20" step="0.10">
+            </div>
+            <div class="hint">Gemiddelde prijs van één biertje of glas wijn. Thuis ~€1,50, café/restaurant ~€5+.</div>
+        </div>
+
+        <div class="settings-group-title">Bier</div>
+
+        <div class="settings-field">
+            <div class="settings-field-row">
+                <label for="set-beer-vol">Inhoud (ml)</label>
+                <input type="number" id="set-beer-vol" min="100" max="1000" step="10">
+            </div>
+            <div class="hint">330 = flesje pils, 250 = klein glas.</div>
+        </div>
+
+        <div class="settings-field">
+            <div class="settings-field-row">
+                <label for="set-beer-units">Eenheden per consumptie</label>
+                <input type="number" id="set-beer-units" min="0.1" max="5" step="0.1">
+            </div>
+            <div class="hint">Vuistregel: pils 5% in 330 ml = 1,3 e. Speciaalbier 8% = 2,1 e.</div>
+        </div>
+
+        <div class="settings-field">
+            <div class="settings-field-row">
+                <label for="set-beer-kcal">Kcal per consumptie</label>
+                <input type="number" id="set-beer-kcal" min="0" max="500" step="5">
+            </div>
+        </div>
+
+        <div class="settings-group-title">Wijn</div>
+
+        <div class="settings-field">
+            <div class="settings-field-row">
+                <label for="set-wine-units">Eenheden per glas</label>
+                <input type="number" id="set-wine-units" min="0.1" max="5" step="0.1">
+            </div>
+            <div class="hint">Standaard glas 100 ml van 12% = 1,0 e.</div>
+        </div>
+
+        <div class="settings-field">
+            <div class="settings-field-row">
+                <label for="set-wine-kcal">Kcal per glas</label>
+                <input type="number" id="set-wine-kcal" min="0" max="500" step="5">
+            </div>
+        </div>
+
+        <div class="settings-actions">
+            <button class="restore" id="settings-restore">Herstel standaard</button>
+            <button class="save" id="settings-save">Opslaan</button>
+        </div>
+    </div>
+
+    <div class="activity-sheet" id="activity-sheet">
+        <div class="sheet-grabber"></div>
+        <div class="sheet-title">Wat heb je gedaan vandaag?</div>
+        <div class="sheet-sub">Eén tik registreert de activiteit en sluit de dag af.</div>
+        <div class="activity-grid" id="activity-grid"></div>
+        <button class="sheet-skip" id="sheet-skip">Overslaan — dag wel afsluiten</button>
+    </div>
+
     <script>
         // === DATA MODEL ===
         // Elk drankje: { id, type, units, timestamp }
         // type: 'beer' | 'wine' | 'spirit'
 
-        const DRINK_TYPES = {
-            beer: { name: 'Bier (330 ml)', units: 1.3, kcal: 145, swatch: 'beer' },
-            wine: { name: 'Wijn', units: 1.0, kcal: 85, swatch: 'wine' }
-        };
+        // DRINK_TYPES wordt opgebouwd uit settings (zie buildDrinkTypes)
+        let DRINK_TYPES = {};
+
+        function buildDrinkTypes() {
+            DRINK_TYPES = {
+                beer: { name: 'Bier (' + settings.beerVolumeMl + ' ml)', units: settings.beerUnits, kcal: settings.beerKcal, swatch: 'beer' },
+                wine: { name: 'Wijn', units: settings.wineUnits, kcal: settings.wineKcal, swatch: 'wine' }
+            };
+        }
 
         const STORAGE_KEY = 'alcohol-tracker-drinks';
+        const ACTIVITY_KEY = 'alcohol-tracker-activities';
+        const SETTINGS_KEY = 'alcohol-tracker-settings';
+
+        const ACTIVITIES = {
+            movement:    { icon: '🏃', label: 'Beweging' },
+            reading:     { icon: '📚', label: 'Lezen / leren' },
+            social:      { icon: '👥', label: 'Sociaal' },
+            rest:        { icon: '🛏️', label: 'Rust / vroeg slapen' },
+            treat:       { icon: '🍽️', label: 'Iets lekkers' },
+            done:        { icon: '💼', label: 'Iets afgemaakt' },
+            hobby:       { icon: '⛵', label: 'Hobby' },
+            other:       { icon: '✓',  label: 'Anders / geen' }
+        };
+
+        // Aanname voor besparingsteller: gemiddeld €2 per drankje dat je anders had gehad
+        const DEFAULT_PRICE_PER_DRINK = 2.0;
+        // Aanname: zonder de streak had je gemiddeld dit aantal eenheden per dag gedronken
+        const DEFAULT_BASELINE_UNITS_PER_DAY = 2.0;
 
         const MILESTONES = [
             {
@@ -752,6 +1287,9 @@
 
         // === STATE ===
         let drinks = loadDrinks();
+        let activities = loadActivities();
+        let settings = loadSettings();
+        buildDrinkTypes();
 
         // === HELPERS ===
         function loadDrinks() {
@@ -767,6 +1305,44 @@
 
         function saveDrinks() {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(drinks));
+        }
+
+        function loadActivities() {
+            // activities = { '2026-05-15': { type: 'movement', closedAt: 1747... }, ... }
+            const raw = localStorage.getItem(ACTIVITY_KEY);
+            if (!raw) return {};
+            try {
+                return JSON.parse(raw);
+            } catch (e) {
+                return {};
+            }
+        }
+
+        function saveActivities() {
+            localStorage.setItem(ACTIVITY_KEY, JSON.stringify(activities));
+        }
+
+        function loadSettings() {
+            const raw = localStorage.getItem(SETTINGS_KEY);
+            const defaults = {
+                pricePerDrink: DEFAULT_PRICE_PER_DRINK,
+                baselineUnitsPerDay: DEFAULT_BASELINE_UNITS_PER_DAY,
+                beerVolumeMl: 330,
+                beerUnits: 1.3,
+                beerKcal: 145,
+                wineUnits: 1.0,
+                wineKcal: 85
+            };
+            if (!raw) return defaults;
+            try {
+                return Object.assign(defaults, JSON.parse(raw));
+            } catch (e) {
+                return defaults;
+            }
+        }
+
+        function saveSettings() {
+            localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
         }
 
         function todayKey() {
@@ -891,6 +1467,11 @@
                 units: def.units,
                 timestamp: timestampForDateKey(dateK)
             });
+            // Als deze dag eerder afgesloten was als alcoholvrij: dan is dat niet meer juist
+            if (activities[dateK]) {
+                delete activities[dateK];
+                saveActivities();
+            }
             saveDrinks();
             render();
         }
@@ -913,11 +1494,124 @@
         }
 
         function resetAll() {
-            if (drinks.length === 0) return;
+            if (drinks.length === 0 && Object.keys(activities).length === 0) return;
             if (!confirm('Alle geschiedenis wissen? Dit kan niet ongedaan worden.')) return;
             drinks = [];
+            activities = {};
             saveDrinks();
+            saveActivities();
             render();
+        }
+
+        // === DAG AFSLUITEN ===
+        function closeDay(dateK, activityType) {
+            activities[dateK] = {
+                type: activityType,
+                closedAt: Date.now()
+            };
+            saveActivities();
+            hideActivitySheet();
+            render();
+        }
+
+        function reopenDay(dateK) {
+            delete activities[dateK];
+            saveActivities();
+            render();
+        }
+
+        function showActivitySheet() {
+            document.getElementById('activity-sheet').classList.add('open');
+            document.getElementById('sheet-backdrop').classList.add('open');
+        }
+
+        function hideActivitySheet() {
+            document.getElementById('activity-sheet').classList.remove('open');
+            document.getElementById('sheet-backdrop').classList.remove('open');
+        }
+
+        // === SETTINGS SHEET ===
+        function showSettingsSheet() {
+            // Vul velden met huidige waarden
+            document.getElementById('set-baseline').value = settings.baselineUnitsPerDay;
+            document.getElementById('set-baseline-value').textContent = formatNumber(settings.baselineUnitsPerDay);
+            document.getElementById('set-price').value = settings.pricePerDrink.toFixed(2);
+            document.getElementById('set-beer-vol').value = settings.beerVolumeMl;
+            document.getElementById('set-beer-units').value = settings.beerUnits;
+            document.getElementById('set-beer-kcal').value = settings.beerKcal;
+            document.getElementById('set-wine-units').value = settings.wineUnits;
+            document.getElementById('set-wine-kcal').value = settings.wineKcal;
+
+            document.getElementById('settings-sheet').classList.add('open');
+            document.getElementById('sheet-backdrop').classList.add('open');
+        }
+
+        function hideSettingsSheet() {
+            document.getElementById('settings-sheet').classList.remove('open');
+            document.getElementById('sheet-backdrop').classList.remove('open');
+        }
+
+        function saveSettingsFromForm() {
+            const newSettings = {
+                baselineUnitsPerDay: parseFloat(document.getElementById('set-baseline').value) || DEFAULT_BASELINE_UNITS_PER_DAY,
+                pricePerDrink: parseFloat(document.getElementById('set-price').value) || DEFAULT_PRICE_PER_DRINK,
+                beerVolumeMl: parseInt(document.getElementById('set-beer-vol').value, 10) || 330,
+                beerUnits: parseFloat(document.getElementById('set-beer-units').value) || 1.3,
+                beerKcal: parseInt(document.getElementById('set-beer-kcal').value, 10) || 145,
+                wineUnits: parseFloat(document.getElementById('set-wine-units').value) || 1.0,
+                wineKcal: parseInt(document.getElementById('set-wine-kcal').value, 10) || 85
+            };
+            settings = Object.assign(settings, newSettings);
+            saveSettings();
+            buildDrinkTypes();
+            hideSettingsSheet();
+            render();
+        }
+
+        function restoreSettings() {
+            if (!confirm('Alle instellingen terugzetten naar standaard?')) return;
+            localStorage.removeItem(SETTINGS_KEY);
+            settings = loadSettings();
+            buildDrinkTypes();
+            showSettingsSheet(); // herlaad met defaults
+            render();
+        }
+
+        // === SINDS-START BEREKENINGEN ===
+        function getStartDate() {
+            // De "start" is de eerste registratie (anker of echte drink).
+            // Vanaf de dag NA die registratie tellen we alcoholvrije dagen.
+            if (drinks.length === 0) return null;
+            const earliest = new Date(Math.min(...drinks.map(d => d.timestamp)));
+            const start = new Date(earliest);
+            start.setDate(start.getDate() + 1);
+            start.setHours(0, 0, 0, 0);
+            return start;
+        }
+
+        function computeTotals() {
+            const start = getStartDate();
+            if (!start) return { dryDays: 0, unitsAvoided: 0, kcalSaved: 0, eurosSaved: 0 };
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            let dryDays = 0;
+            const walk = new Date(start);
+            while (walk <= today) {
+                const k = dateKey(walk);
+                if (unitsOnDate(k) === 0) dryDays++;
+                walk.setDate(walk.getDate() + 1);
+            }
+
+            const unitsAvoided = dryDays * settings.baselineUnitsPerDay;
+            // Schatting kcal: een gemiddelde standaardeenheid ≈ 90 kcal
+            const kcalSaved = Math.round(unitsAvoided * 90);
+            // Schatting euro's: prijs per consumptie × aantal vermeden consumpties
+            const drinksAvoided = unitsAvoided / 1.1; // gemiddeld 1,1 eenheid per consumptie (bier/wijn-mix)
+            const eurosSaved = Math.round(drinksAvoided * settings.pricePerDrink);
+
+            return { dryDays, unitsAvoided, kcalSaved, eurosSaved };
         }
 
         // === RENDER ===
@@ -1114,11 +1808,96 @@
             }).join('');
         }
 
+        function renderCloseDay() {
+            const today = todayKey();
+            const todayUnits = unitsOnDate(today);
+            const closed = activities[today];
+
+            const btn = document.getElementById('close-day-btn');
+            const badge = document.getElementById('day-closed-badge');
+
+            // Toon alleen als vandaag alcoholvrij is
+            if (todayUnits > 0) {
+                btn.style.display = 'none';
+                badge.style.display = 'none';
+                return;
+            }
+
+            if (closed) {
+                btn.style.display = 'none';
+                badge.style.display = 'flex';
+                const def = ACTIVITIES[closed.type] || ACTIVITIES.other;
+                document.getElementById('closed-icon').textContent = def.icon;
+                document.getElementById('closed-text').textContent = 'Dag afgesloten — ' + def.label.toLowerCase();
+            } else {
+                btn.style.display = 'flex';
+                badge.style.display = 'none';
+            }
+        }
+
+        function renderActivityGrid() {
+            const grid = document.getElementById('activity-grid');
+            grid.innerHTML = Object.entries(ACTIVITIES).map(([key, def]) => `
+                <button class="activity-btn" data-activity="${key}">
+                    <span class="activity-icon">${def.icon}</span>
+                    <span>${def.label}</span>
+                </button>
+            `).join('');
+
+            grid.querySelectorAll('.activity-btn').forEach(btn => {
+                btn.addEventListener('click', () => closeDay(todayKey(), btn.dataset.activity));
+            });
+        }
+
+        function renderTotals() {
+            const totals = computeTotals();
+            const start = getStartDate();
+
+            const section = document.getElementById('totals-section');
+            if (!start) {
+                section.style.display = 'none';
+                return;
+            }
+            section.style.display = '';
+
+            // Section header bijwerken met startdatum
+            const startBefore = new Date(start);
+            startBefore.setDate(startBefore.getDate() - 1);
+            const startLabel = startBefore.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long' });
+            section.querySelector('h2').textContent = 'Sinds ' + startLabel;
+
+            document.getElementById('total-dry-days').textContent = totals.dryDays;
+            document.getElementById('total-units').textContent = formatNumber(totals.unitsAvoided);
+            document.getElementById('total-kcal').textContent = totals.kcalSaved.toLocaleString('nl-NL');
+            document.getElementById('total-euros').textContent = totals.eurosSaved.toLocaleString('nl-NL');
+            document.getElementById('baseline-units').textContent = formatNumber(settings.baselineUnitsPerDay);
+            document.getElementById('baseline-price').textContent = settings.pricePerDrink.toFixed(2).replace('.', ',');
+        }
+
+        function renderDrinkButtons() {
+            document.querySelectorAll('.btn[data-type]').forEach(btn => {
+                const type = btn.dataset.type;
+                const def = DRINK_TYPES[type];
+                if (!def) return;
+                const label = btn.querySelector('.label');
+                const sub = btn.querySelector('.sub');
+                if (type === 'beer') {
+                    label.textContent = 'Bier ' + settings.beerVolumeMl + 'ml';
+                } else if (type === 'wine') {
+                    label.textContent = 'Wijn';
+                }
+                sub.textContent = '+' + formatNumber(def.units) + ' e.';
+            });
+        }
+
         function render() {
             renderDate();
             renderDatePicker();
+            renderDrinkButtons();
             renderHero();
+            renderCloseDay();
             renderStreaks();
+            renderTotals();
             renderTodayList();
             renderChart();
             renderMilestones();
@@ -1139,6 +1918,24 @@
         document.getElementById('today-btn').addEventListener('click', () => {
             dateInput.value = todayKey();
             render();
+        });
+
+        // Dag afsluiten flow
+        document.getElementById('close-day-btn').addEventListener('click', showActivitySheet);
+        document.getElementById('reopen-btn').addEventListener('click', () => reopenDay(todayKey()));
+        document.getElementById('sheet-skip').addEventListener('click', () => closeDay(todayKey(), 'other'));
+        document.getElementById('sheet-backdrop').addEventListener('click', () => {
+            hideActivitySheet();
+            hideSettingsSheet();
+        });
+        renderActivityGrid();
+
+        // Settings flow
+        document.getElementById('settings-btn').addEventListener('click', showSettingsSheet);
+        document.getElementById('settings-save').addEventListener('click', saveSettingsFromForm);
+        document.getElementById('settings-restore').addEventListener('click', restoreSettings);
+        document.getElementById('set-baseline').addEventListener('input', (e) => {
+            document.getElementById('set-baseline-value').textContent = formatNumber(parseFloat(e.target.value));
         });
 
         // Ververs bij terugkomen op tab (bv. nieuwe dag begonnen)
